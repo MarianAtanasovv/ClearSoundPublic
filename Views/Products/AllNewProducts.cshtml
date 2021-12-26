@@ -1,0 +1,48 @@
+﻿@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
+
+@{
+    ViewData["Title"] = "New Products";
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+@using Microsoft.AspNetCore.Identity
+@model ICollection<ClearSoundCompany.Data.Models.Products.Product>
+
+<section>
+    <div class="container main-container" data-aos="fade-up">
+
+        <div class="section-title" align="center">
+            <p style="color: white">All <span style="color: red">New</span> Products</p>
+        </div>
+
+        <div class="row" style="color: white">
+            @foreach (var product in Model)
+            {
+                <div class="col-lg-3 col-md-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="25">
+                    <div class="icon-box">
+                        <a asp-area="" asp-controller="Products" asp-action="ProductInformationNewProduct" asp-route-id="@product.Id">
+                            <img src="/database_files/Products/@product.ProfileImage" alt="" />
+                        </a>
+                        <h4>
+                            <a asp-area="" asp-controller="Products" asp-action="ProductInformationNewProduct" asp-route-id="@product.Id">@product.Name</a>
+                        </h4>
+                        @if (_signInManager.IsSignedIn(User) && !User.IsInRole("Administrator"))
+                        {
+                            <input class="btn get-started-cart-btn" id="submit-id-submit" type="button" value="Add" onclick="addProduct('@product.Id')" />
+                        }
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <form method="post" asp-area="Administration" asp-controller="Products" asp-action="DeleteProduct" asp-route-id="@product.Id" id="deleteForm">
+                            </form>
+                            <a class="btn btn-primary" asp-area="Administration" asp-controller="Products" asp-action="EditProduct" asp-route-id="@product.Id">Edit</a>
+                            <a class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,277 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <!-- Title -->
+    <title>@ViewData["Title"] - Clear Sound</title>
+
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+
+    <link rel="stylesheet" href="/assets/vendor/fancybox-4.0.6/fancybox.css"/>
+
+    <!--Font Awesome-->
+    <script src="https://kit.fontawesome.com/a5c2d2f39b.js" crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+    <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/assets/vendor/venobox/venobox.css" rel="stylesheet">
+    <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+
+    <!-- Include Summernote css/js-->
+    <link href="/assets/vendor/summernote-0.8.18-dist/summernote-bs4.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center justify-content-between" style="padding: 0 50px 0 0;">
+
+        <!-- Main logo upper left corner  -->
+        <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">
+            <img src="~/assets/img/logo.svg" alt="Clear Sound">
+        </a>
+        <!-- .nav-menu -->
+        <nav class="nav-menu d-none d-lg-block">
+            <ul>
+                <li>
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <li class="drop-down">
+                        <a>Add</a>
+                        <ul>
+                            <li>
+                                <a asp-area="Administration" asp-controller="Products" asp-action="AddProduct">Add Product</a>
+                            </li>
+                            <li>
+                                <a asp-area="Administration" asp-controller="Festivals" asp-action="AddFestival">Add Festival</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="drop-down">
+                        <a>Edit</a>
+                        <ul>
+                            <li>
+                                <a asp-area="Administration" asp-controller="About" asp-action="Edit">Edit About</a>
+                            </li>
+                            <li>
+                                <a asp-area="Administration" asp-controller="Products" asp-action="AllCategoriesForEditAndDelete">Edit Categories</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a asp-area="Administration" asp-controller="Users" asp-action="Index">All Users</a>
+                    </li>
+                }
+                <li class="drop-down">
+                    <a asp-area="" asp-controller="Products" asp-action="AllCategories">Products</a>
+                    <ul>
+                        @await Component.InvokeAsync("AllCategories").ConfigureAwait(true)
+                    </ul>
+                </li>
+                <li class="drop-down">
+                    <a asp-area="" asp-controller="Festivals" asp-action="AllCountries">Festivals</a>
+                    <ul>
+                        @await Component.InvokeAsync("AllCountries").ConfigureAwait(true)
+                    </ul>
+                </li>
+
+                @if (!User.IsInRole("Administrator"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="About" asp-action="Info">About</a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Contacts" asp-action="Send">Contact</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+        <!-- .nav-menu -->
+        <!-- Login and Register buttons -->
+        <div id="main-buttons" style="position: relative">
+            @if (_signInManager.IsSignedIn(User))
+            {
+                @if (!User.IsInRole("Administrator"))
+                {
+                    <a class="get-started-cart-btn" asp-area="" asp-controller="Carts" asp-action="Index">
+                        <i style="font-size: 17px;" class="fas fa-shopping-basket"></i>
+                    </a>
+                }
+                <a class="get-started-btn" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile</a>
+                <a class="get-started-btn" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">Logout</a>
+            }
+            else
+            {
+                <a class="get-started-btn " asp-area="Identity" asp-page="/Account/Register">Register</a>
+                <a class="get-started-btn " asp-area="Identity" asp-page="/Account/Login">Login</a>
+            }
+        </div>
+    </div>
+</header>
+<!-- End Header -->
+
+<main id="main">
+
+    <div id="js-notification-add-product">
+        <div class="container" id="global-info-alert" data-aos="fade-up" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            <div class="alert" id="global-alert-box" role="alert">
+                <span id="global-alert-text">-</span>
+            </div>
+        </div>
+    </div>
+    @if (TempData["alertSuccess"] != null)
+    {
+        <div class="container" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
+                @TempData["alertSuccess"].ToString()
+            </div>
+        </div>
+    }
+    @if (TempData["alertWarning"] != null)
+    {
+        <div class="container" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
+                @TempData["alertWarning"].ToString()
+            </div>
+        </div>
+    }
+    @if (TempData["alertDanger"] != null)
+    {
+        <div class="container" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
+                @TempData["alertDanger"].ToString()
+            </div>
+        </div>
+    }
+    @RenderBody()
+</main>
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+    <div class="footer-top" align="center">
+        <div class="footer-info">
+            <h3><span>C</span>lear <span>S</span>ound <span>L</span>td.</h3>
+            <p>
+                2 Rozhen blvd. <br>
+                1220 Sofia, Bulgaria<br>
+                <br>
+                <strong>Email:</strong> office@clearsoundco.org<br>
+                <br>
+            </p>
+            <div>
+                <a class="fas" href="https://www.facebook.com/ClearSoundLtd" style="margin: 3px; color: white">
+                    <i class="fab fa-facebook-square fa-2x"></i>
+                </a>
+                <a class="fas" href="https://twitter.com/Clear_Sound_Ltd" style="margin: 3px; color: white">
+                    <i class="fab fa-twitter-square fa-2x"></i>
+                </a>
+                <a class="fas" href="https://www.instagram.com/clear.sound/" style="margin: 3px; color: white">
+                    <i class="fab fa-instagram-square fa-2x"></i>
+                </a>
+                <a class="fas" href="https://www.youtube.com/c/ClearSound" style="margin: 3px; color: white">
+                    <i class="fab fa-youtube-square fa-2x"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="copyright">
+            &copy; @DateTime.UtcNow.Year -
+            <strong>
+                <span>Clear Sound Ltd.</span>
+            </strong> All Rights Reserved
+        </div>
+    </div>
+</footer>
+<!-- End Footer -->
+<!-- Vendor JS Files -->
+<script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+<script src="/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+<script src="/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/assets/vendor/venobox/venobox.min.js"></script>
+<script src="/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+<script src="/assets/vendor/counterup/counterup.min.js"></script>
+<script src="/assets/vendor/aos/aos.js"></script>
+<script src="/assets/vendor/summernote-0.8.18-dist/summernote-bs4.js"></script>
+<script src="/assets/vendor/js-cloudimage-360-view-master/js-cloudimage-360-view-master/build/js-cloudimage-360-view.min.js"></script>
+<script src="/assets/vendor/fancybox-4.0.6/fancybox.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<!-- Main JS File -->
+<script src="/assets/js/main.js"></script>
+
+@await RenderSectionAsync("scripts", false)
+</body>
+</html>
+
+<script>
+    var notification;
+
+    function myStopFunction() {
+        clearTimeout(notification);
+    }
+
+    function myFunction() {
+        notification = setTimeout(function() { $("#global-info-alert").slideUp(500); }, 1000);
+    }
+
+    function addProduct(id) {
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddProductCart", "Carts")',
+                data: {
+                    __RequestVerificationToken: token,
+                    productId: id
+                },
+                dataType: 'json'
+            })
+            .done(function(result) {
+                myStopFunction();
+                // Success
+                if (result.success) {
+                    $('#global-alert-box').addClass("alert-success");
+
+                } // Warning
+                else if (result.msg === "Operation failed") {
+                    $('#global-alert-box').addClass("alert-danger");
+                } else if (!result.success) {
+                    $('#global-alert-box').addClass("alert-warning");
+                }
+
+                $('#global-alert-text').html(result.msg);
+
+                $("#global-info-alert").slideDown(200);
+                // use slide down for animation
+                myFunction();
+
+            });
+    }
+</script>

@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "About us";
+}
+@model ClearSoundCompany.Areas.Administration.Models.About.AddOrEditFormModel
+<!-- ======= About Section ======= -->
+<section id="about" class="about">
+    <div class="container main-container" data-aos="fade-up">
+
+        <div class="section-title" align="center">
+            <p style="color: white">About Us</p>
+        </div>
+        <div class="row" style="color: white">
+            <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+                <p>@Html.Raw(Model.Description)</p>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
+                <img src="/assets/img/@Model.ImageName" class="img-fluid" alt="">
+            </div>
+        </div>
+    </div>
+</section>

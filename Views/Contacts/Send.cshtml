@@ -1,0 +1,109 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
+@using AspNetCore.ReCaptcha
+@{ ViewData["Title"] = "Contact us";
+                var usr = await _userManager.GetUserAsync(User);
+                var email = usr?.Email; }
+@model ClearSoundCompany.Models.Contacts.SendEmailFormModel
+<!-- ======= Contact Section ======= -->
+<section id="contact" class="contact">
+    <div class="container main-container" data-aos="fade-up">
+        <div class="section-title">
+            <p style="color: white">Contact Us</p>
+        </div>
+
+        <div>
+            <iframe style="border: 0; height: 270px; width: 100%;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2072.539482014492!2d23.313402820100556!3d42.72460617699475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xd1507ce7c3efccc4!2sClear%20Sound%20Ltd.!5e0!3m2!1sbg!2sbg!4v1627396289183!5m2!1sbg!2sbg" frameborder="0" allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <div class="row mt-5">
+
+            <div class="col-lg-4">
+                <div class="info">
+                    <div class="address">
+                        <i class="icofont-google-map"></i>
+                        <h4>Location:</h4>
+                        <p>
+                            2 Rozhen blvd.
+                        </p>
+                        <p>
+                            1220 Sofia
+                        </p>
+                        <p>
+                            Bulgaria
+                        </p>
+                    </div>
+
+                    <div class="email">
+                        <i class="icofont-envelope"></i>
+                        <h4>Email:</h4>
+                        <p>office@clearsoundco.org</p>
+                    </div>
+
+                    <div class="phone">
+                        <i class="icofont-phone"></i>
+                        <h4>Call:</h4>
+                        <p>
+                            +359 884 852 252
+                        </p>
+                        <p>
+                            +359 884 852 100
+                        </p>
+                        <hr>
+                        <p>
+                            Mon - Fri: 10:00 - 18:00 (EET)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 mt-5 mt-lg-0">
+
+                <form method="Post" enctype="multipart/form-data" style="color: white">
+                    <div class="form-row">
+                        <div class="col-md-6 form-group">
+                            <input asp-for="Name" type="text" name="name" class="form-control" id="name" placeholder="Your Name">
+                            <span asp-validation-for="Name" class="small text-danger"></span>
+                        </div>
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+            <div class="col-md-6 form-group">
+                <input asp-for="Email" class="form-control" id="email" value=@email placeholder="Please enter a valid email" />
+                <span asp-validation-for="Email" class="small text-danger"></span>
+            </div> }
+                        else
+                        {
+            <div class="col-md-6 form-group">
+                <input asp-for="Email" class="form-control" id="email" placeholder="Please enter a valid email" />
+                <span asp-validation-for="Email" class="small text-danger"></span>
+            </div>}
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Subject" class="form-control" id="subject" placeholder="Subject" />
+                        <span asp-validation-for="Subject" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <textarea asp-for="Message" class="form-control" rows="5" placeholder="Message"></textarea>
+                        <span asp-validation-for="Message" class="small text-danger"></span>
+                    </div>
+                    @Html.ReCaptcha()
+                    <br />
+                    <div class="text-center">
+                        <input asp-controller="Contacts" asp-action="Send" class="btn get-started-btn" type="submit" value="Send Message">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ReSharper disable once Razor.SectionNotResolved *@
+@section scripts{
+    <script type="text/javascript">$(document).ready(function() {
+            setTimeout(function() {
+                    $(".alert").fadeOut();
+                },
+                4000);
+        });</script>
+}

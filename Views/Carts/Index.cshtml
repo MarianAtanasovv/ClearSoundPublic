@@ -1,0 +1,190 @@
+﻿@using ClearSoundCompany.Models.Carts
+@{
+    ViewData["Title"] = "Shopping cart";
+}
+@model TotalPriceDiscountAndListOfCartsViewModel
+<section>
+    <div class="container main-container">
+        <div class="section-title" align="center">
+            <p style="color: white">Shopping Cart</p>
+        </div>
+        @if (Model.Products.Count == 0)
+        {
+            <div class="section-title" align="center" style="padding: 50px 30px 80px">
+                <p style="color: red">Your shopping cart is empty!</p>
+                <br />
+                <a class="login-button" asp-controller="Products" asp-action="AllCategories">Back to all product categories</a>
+            </div>
+        }
+        else
+        {
+            <!-- Shopping Cart-->
+            <div class="table-responsive shopping-cart">
+                <table class="table" style="color: white">
+                    <thead>
+                        <tr style="background: rgb(35, 35, 35); font-size: 17px">
+                            <th>Product Name</th>
+                            <th style="text-align: center">Retail Price</th>
+                            <th style="text-align: center">Quantity</th>
+                            <th style="text-align: center; color: rgb(255, 186, 186)">Total</th>
+                            <th style="text-align: center">
+                                <a class="get-started-btn" asp-controller="Carts" asp-action="ClearCart" style="padding: 8px; font-size: 14px">Clear Cart</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var productCart in Model.Products)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="product-item">
+                                        <div>
+                                            <a class="product-thumb" asp-controller="Products" asp-action="ProductInformation" asp-route-id="@productCart.Id">
+                                                <img src="/database_files/Products/@productCart.Image" alt="Product" style="border-radius: 10px">
+                                            </a>
+                                            <a asp-controller="Carts" asp-action="AddProductCartDifferentColor" asp-route-productId="@productCart.Id" style="display: inline-block; margin-top: 10px; text-align: center"><i style="font-size: 20px" class="fas fa-plus-circle"></i> <p>Add different color</p></a>
+                                        </div>
+                                        <div class="product-info">
+                                            <h4 class="product-title">
+                                                <a asp-controller="Products" asp-action="ProductInformation" asp-route-productId="@productCart.Id">@productCart.Name</a>
+                                            </h4>
+                                            <span style="font-weight: bold; padding: 0 0 10px 0">
+                                                <em style="font-weight: bold">Category:</em> <a asp-controller="Products" asp-action="AllProductsByCategory" asp-route-productId="@productCart.CategoryId"> @productCart.Category</a>
+                                            </span>
+                                            <span style="font-weight: bold; padding: 0 0 10px 0">
+                                                @if (productCart.SelectedColor == "red")
+                                                {
+                                                    <em style="font-weight: bold">Color:</em>
+                                                    <a style="color: red">Red</a>
+                                                }
+                                                else if (productCart.SelectedColor == "black")
+                                                {
+                                                    <em style="font-weight: bold">Color:</em>
+                                                    <a style="color: black" class="blackColorCart">Black</a>
+                                                }
+                                                else if (productCart.SelectedColor == "white")
+                                                {
+                                                    <em style="font-weight: bold">Color:</em>
+                                                    <a style="color: white">White</a>
+                                                }
+                                                else if (productCart.SelectedColor == "blackandwhite")
+                                                {
+                                                    <em style="font-weight: bold">Color:</em>
+                                                    <a style="color: black" class="blackColorCart">Black </a><a>and White</a>
+                                                }
+                                                else if (productCart.SelectedColor == "blackandred")
+                                                {
+                                                    <em style="font-weight: bold">Color:</em>
+                                                    <a style="color: black" class="blackColorCart">Black </a><a>and </a><a style="color: red">Red</a>
+                                                }
+                                            </span>
+
+                                            @if (productCart.Colors.Contains("red"))
+                                            {
+                                                <a asp-controller="Carts" asp-action="ColorChange" asp-route-productId="@productCart.Id" asp-route-color="red" class="button-red" title="Red"></a>
+                                            }
+                                            @if (productCart.Colors.Contains("black"))
+                                            {
+                                                <a asp-controller="Carts" asp-action="ColorChange" asp-route-productId="@productCart.Id" asp-route-color="black" class="button-black" title="Black"></a>
+                                            }
+                                            @if (productCart.Colors.Contains("white"))
+                                            {
+                                                <a asp-controller="Carts" asp-action="ColorChange" asp-route-productId="@productCart.Id" asp-route-color="white" class="button-white" title="White"></a>
+                                            }
+                                            @if (productCart.Colors.Contains("blackandwhite"))
+                                            {
+                                                <a asp-controller="Carts" asp-action="ColorChange" asp-route-productId="@productCart.Id" asp-route-color="blackandwhite" class="button-black-white" title="Black & White"></a>
+                                            }
+                                            @if (productCart.Colors.Contains("blackandred"))
+                                            {
+                                                <a asp-controller="Carts" asp-action="ColorChange" asp-route-productId="@productCart.Id" asp-route-color="blackandred" class="button-black-red" title="Black & Red"></a>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center" style="font-size: 18px">@productCart.Price €</td>
+
+                                <td class="text-center">
+                                    <div class="count-input">
+
+                                        <div class="row">
+                                            <a asp-controller="Carts" asp-action="RemoveProductQuantity" asp-route-productId="@productCart.Id" class="btn btn-danger col-3" style="display: inline-block; align-self: center; padding: 0 0 2px 0; margin: 2px; border-radius: 50%">
+                                                -
+                                            </a>
+
+                                            <input class="form-control col-5" style="text-align: center" value="@productCart.Quantity">
+
+                                            <a asp-controller="Carts" asp-action="AddProductQuantity" asp-route-productId="@productCart.Id" class="btn btn-success col-3" style="display: inline-block; align-self: center; text-align: center; padding: 0 0 2px 0; margin: 2px; border-radius: 50%">
+                                                +
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                @{ var finalPrice = productCart.Price * productCart.Quantity; }
+                                <td class="text-center" style="font-size: 18px">@finalPrice € </td>
+                                <td class="text-center">
+                                    <a class="remove-from-cart" asp-controller="Carts" asp-action="DeleteProduct" asp-route-productId="@productCart.Id">
+                                        <i class="far fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="shopping-cart-footer" style="font-size: 18px; background: rgb(35, 35, 35)">
+                <div class="row">
+                    <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                    <div class="col-xl-3 col-lg-4 col-md-5 font-weight-bold" style="color: rgb(255, 186, 186)">Subtotal: <span class="float-right">@Model.TotalPrice € </span></div>
+                </div>
+                @if (Model.PaintingAddition != 0)
+                {
+                    <div class="row">
+                        <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                        <div class="col-xl-3 col-lg-4 col-md-5 font-weight-bold" style="color: rgb(255, 186, 186)">Bicolor (optional): <span class="float-right">@Model.PaintingAddition € </span></div>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                    <div class="col-xl-3 col-lg-4 col-md-5  font-weight-bold" style="color: rgb(186, 255, 186)">
+                        Discount (@Model.DiscountPercentage %):
+                        @if (Model.DiscountPrice == 0)
+                        {
+                            <span class="float-right">@Model.DiscountPrice € </span>
+                        }
+                        else
+                        {
+                            <span class="float-right">- @Model.DiscountPrice € </span>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                    <div class="col-xl-3 col-lg-4 col-md-5 font-weight-bold" style="color: white">Total: <span class="float-right">@(Model.TotalPrice - Model.DiscountPrice + Model.PaintingAddition) €</span></div>
+                </div>
+            </div>
+            <div class="shopping-cart-footer">
+                <div class="column">
+                    <a class="get-started-btn" asp-controller="Products" asp-action="AllCategories">Back to Shopping</a>
+                </div>
+                <div class="column">
+                    <a asp-controller="Carts" asp-action="SubmitOrder" class="btn btn-success"><i class="fas fa-shipping-fast"></i> Checkout</a>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@* ReSharper disable once Razor.SectionNotResolved *@
+
+@section scripts{
+    <script type="text/javascript">
+        function timeOut() {
+            setTimeout(function() {
+                    $(".alert").fadeOut();
+                },
+                4000);
+        };
+    </script>
+}

@@ -1,0 +1,19 @@
+﻿@model IList<ClearSoundCompany.Data.Models.Rental.Country>
+
+@foreach (var country in Model.Where(i => i.Festivals.Any()).OrderBy(i => i.Name))
+{
+    <li class="drop-down">
+
+        <a  asp-area="" asp-controller="Festivals" asp-action="AllFestivalsByCountry" asp-route-id="@country.Id" style="vertical-align: middle;">
+            <img style="width: 22px;height: 15px; border: 1px solid #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); margin-right: 2px" src="/database_files/Flags/Compressed/@(country.FlagImage.ToUpper())-min.png" alt="" /> <span style="vertical-align: middle">@country.Name</span>
+        </a>
+        <ul>
+            @foreach (var festival in country.Festivals.OrderBy(i => i.Name))
+            {
+                <li>
+                    <a  asp-area="" asp-controller="Festivals" asp-action="FestivalInformation" asp-route-id="@festival.Id">@festival.Name</a>
+                </li>
+            }
+        </ul>
+    </li>
+}

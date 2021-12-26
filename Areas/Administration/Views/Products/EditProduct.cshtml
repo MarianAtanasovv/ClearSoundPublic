@@ -1,0 +1,178 @@
+﻿@{ ViewData["Title"] = "Edit Product"; }
+@model EditProductFormModel
+
+<section>
+    <div class="container main-container">
+        <div class="section-title" align="center">
+            <p style="color: white">Edit <span style="color: red">@Model.Name</span></p>
+        </div>
+        <form method="Post" enctype="multipart/form-data" style="color: white">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="Name">Model</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter the model here (HL 118 BR etc.) ">
+                        <span asp-validation-for="Name" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group" style="color: black">
+                        <label asp-for="Description" style="color: white">Description</label>
+                        <textarea id="summernote" asp-for="Description"></textarea>
+                        <span asp-validation-for="Description" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price">Price (Euro)</label>
+                        <input asp-for="Price" class="form-control" placeholder="Enter the price here">
+                        <span asp-validation-for="Price" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProfileImage" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="ProfileImage" class="custom-file-input">
+                            <label class="custom-file-label">Choose Profile image IF you want to be changed</label>
+                        </div>
+                        <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CompressedProfileImage" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="CompressedProfileImage" class="custom-file-input">
+                            <label class="custom-file-label">Choose Compressed Profile image IF you want to be changed</label>
+                        </div>
+                        <span asp-validation-for="CompressedProfileImage" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryId"></label>
+                        <select asp-for="CategoryId" class="form-control">
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Images" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="Images" class="custom-file-input" multiple>
+                            <label class="custom-file-label">Choose Images IF you want to be added/replaced </label>
+                        </div>
+                        <span asp-validation-for="Images" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProductData" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="ProductData" class="custom-file-input">
+                            <label class="custom-file-label">Choose Product Data document IF you want to be changed </label>
+                        </div>
+                        <span asp-validation-for="ProductData" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="EASEData" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="EASEData" class="custom-file-input">
+                            <label class="custom-file-label">Choose EASE Data document IF you want to be changed </label>
+                        </div>
+                        <span asp-validation-for="EASEData" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Manual" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="Manual" class="custom-file-input" multiple>
+                            <label class="custom-file-label">Choose Manual document IF you want to be changed</label>
+                        </div>
+                        <span asp-validation-for="Manual" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1" asp-for="New">
+                        <label asp-for="New" class="form-check-label" for="exampleCheck1">Is this a NEW product?</label>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <label asp-for="Specifications" style="align-self: center">Specifications</label>
+
+                    <div id="SpecificationContainer" class="row">
+                        @{
+                            var number = 0;
+                            @foreach (var specification in Model.Specifications)
+                            {
+                                <div class="col-4 form-group">
+                                    <input class="form-control" placeholder="Example: Type" name="Specifications[@number].SpecificationName" value="@specification.SpecificationName"/>
+                                </div>
+                                <div class="col-8 form-group">
+                                    <input class="form-control" placeholder="Example: Horn/Reflex loaded sub-woofer" name="Specifications[@number].SpecificationDescription" value="@specification.SpecificationDescription"/>
+                                </div>
+                                number++;
+                            }
+                        }
+                    </div>
+
+                    <a class="btn btn-danger float-left" onclick="DeleteSpecification()">Delete last line</a>
+                    <a class="btn btn-primary float-right" onclick="AddMoreSpecification(@number); checkFilled();">Add new line</a>
+                </div>
+            </div>
+            <br/>
+            <input class="btn btn-success float-right" type="submit" value="Save">
+        </form>
+    </div>
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change",
+            function() {
+                const fileName = window.$(this).val().split("\\").pop();
+                window.$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                ]
+            });
+        });
+        let specificationIndexForDelete = 0;
+        let specificationIndex = 1;
+
+        function AddMoreSpecification(specificationIndexInput) {
+            if (specificationIndex < specificationIndexInput) {
+                specificationIndex = specificationIndexInput
+            }
+            $("#SpecificationContainer")
+                .append(`<div class='col-4 form-group'> <input class='form-control inputSpecification'  onchange='checkFilled()' placeholder='Example: Type' name='Specifications[${specificationIndex + specificationIndexForDelete
+                    }].SpecificationName' /> </div> <div class='col-8 form-group'> <input class='form-control inputSpecification'  onchange='checkFilled()' placeholder='Example: Horn/Reflex loaded sub-woofer' name='Specifications[${specificationIndex + specificationIndexForDelete}].SpecificationDescription' /> </div>`);
+            specificationIndex++;
+
+        }
+
+
+        function DeleteSpecification() {
+            const container = document.getElementById('SpecificationContainer');
+            container.removeChild(container.lastElementChild);
+            container.removeChild(container.lastElementChild);
+            specificationIndexForDelete--;
+        }
+
+        function checkFilled() {
+
+            var inputValues = document.getElementsByClassName("inputSpecification");
+            for (var inputVal of inputValues) {
+                if (inputVal.value === "") {
+                    inputVal.style.backgroundColor = "rgba(230, 158, 158,1)";
+                } else {
+                    inputVal.style.backgroundColor = "";
+                }
+            }
+
+        }
+
+        checkFilled();
+    </script>
+}

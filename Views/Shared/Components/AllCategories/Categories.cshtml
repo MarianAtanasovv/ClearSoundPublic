@@ -1,0 +1,18 @@
+﻿@model IList<ClearSoundCompany.Data.Models.Products.Category>
+
+@foreach (var category in Model.Where(i => i.Products.Any()).OrderBy(i => i.Name))
+{
+    <li class="drop-down">
+        <a asp-area="" asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@category.Id">@category.Name</a>
+        <ul>
+            @foreach (var product in category.Products.OrderBy(i => i.Name))
+            {
+                <li>
+                    <a asp-area="" asp-controller="Products" asp-action="ProductInformation" asp-route-id="@product.Id">
+                        <img style="height: 25px; margin-right: 2px" src="/database_files/Products/@(product.ProfileImage)" alt="" /> <span style="vertical-align: middle">@product.Name</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </li>
+}

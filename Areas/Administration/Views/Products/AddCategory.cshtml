@@ -1,0 +1,28 @@
+﻿@{ ViewData["Title"] = "Add Festival"; }
+
+@model AddCategoryFormModel
+
+<section>
+    <div class="container" style="padding: 120px 100px 0">
+        <div class="section-title" align="center">
+            <p>Add <span style="color: rgb(235, 56, 56) ">New</span> Category</p>
+        </div>
+        <form method="Post" enctype="multipart/form-data" style="color: white">
+            <div class="form-group">
+                <label asp-for="Name">Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter the Name of the category here (example: Loudspeakers)">
+            </div>
+            <div class="form-group">
+                <label asp-for="MinimumQuantity">Minimum Quantity</label>
+                <input asp-for="MinimumQuantity" class="form-control" placeholder="Enter the Minimum Quantity for this category  (example: 2)">
+                <span asp-validation-for="MinimumQuantity" class="small text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1" asp-for="IsAddable">
+                <label asp-for="IsAddable" class="form-check-label" for="exampleCheck1">Can ALL Products from this Category be added to the cart? </label>
+            </div>
+
+            <input class="btn btn-success  float-right" type="submit" value="Save">
+        </form>
+    </div>
+</section>

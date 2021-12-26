@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> _signInManager
+@inject UserManager<IdentityUser> _userManager
+@{
+    ViewData["Title"] = "New Product";
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id = "__AjaxAntiForgeryForm"}))
+{
+    @Html.AntiForgeryToken()
+}
+@model ProductInformationView
+
+<section style="color: white">
+
+    <div class="container main-container" data-aos="fade-up">
+
+        <div class="section-title" align="center">
+            <a class="category" asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@Model.CategoryId">@Model.Category.Name</a>
+            <p>
+                <a asp-action="AllNewProducts">
+                    <i class="fas fa-crown fa-xs"></i>
+                </a>
+                Product Information - <span style="color: red">@Model.Name </span>
+                <a asp-action="AllNewProducts">
+                    <i class="fas fa-crown fa-xs"></i>
+                </a>
+            </p>
+            <a style="color: white" asp-controller="Products" asp-action="NewProductBefore" asp-route-id="@Model.Id">
+                <i class="fas fa-chevron-circle-left fa-2x float-left"></i>
+            </a>
+            <a style="color: white" asp-controller="Products" asp-action="NewProductAfter" asp-route-id="@Model.Id">
+                <i class="fas fa-chevron-circle-right fa-2x float-right"></i>
+            </a>
+            @if (_signInManager.IsSignedIn(User))
+            {
+                <a><strong>Retail Price</strong>: @Model.Price €</a>
+            }
+            <br/>
+            @if (_signInManager.IsSignedIn(User) && !User.IsInRole("Administrator"))
+            {
+                <a>
+                    <input class="btn get-started-cart-btn" type="button" value="Add" onclick="addProduct('@Model.Id')" style="margin: 10px 0 35px 0"/>
+                </a>
+            }
+            @if (User.IsInRole("Administrator"))
+            {
+                <a class="btn btn-info" asp-area="Administration" asp-action="EditProduct" asp-route-id="@Model.Id">Edit Product</a>
+                <a class="btn btn-danger" asp-area="Administration" asp-action="AllImagesForProduct" asp-route-id="@Model.Id">View all images (for DELETE)</a>
+            }
+
+        </div>
+        <partial name="/Views/Products/_ProductInformation.cshtml"/>
+    </div>
+</section>

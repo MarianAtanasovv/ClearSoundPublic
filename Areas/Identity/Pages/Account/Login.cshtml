@@ -1,0 +1,66 @@
+﻿@page
+@model LoginModel
+
+@{ ViewData["Title"] = "Log in"; }
+<!--Checked-->
+<section class="inner-page">
+    <div class="container" style="padding: 120px 20px 0">
+
+        <div class="section-title" align="center">
+            <p style="color: white">@ViewData["Title"]</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-md-1"></div>
+            <div class="col-lg-6 col-md-6 col-sm-7">
+                <form id="account" method="post" style="color: white">
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Password"></label>
+                        <input asp-for="Input.Password" class="form-control" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label asp-for="Input.RememberMe">
+                                <input asp-for="Input.RememberMe" />
+                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            </label>
+                        </div>
+                    </div>
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="row">
+                        <div class="col-lg-10 form-group">
+                            <div class="g-recaptcha" data-sitekey="6LfZvGgcAAAAAMAYi8dkN64HUEFhKPlpG_g0RygS"></div>
+                        </div>
+                        <div class="col-lg-2 form-group">
+                            <button type="submit" class="all-forms-buttons">Log in</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-5 " style="padding: 20px" align="right">
+
+                <p class="get-started-btn">
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" style="color: white">Register as a new user</a>
+                </p>
+                <p class="get-started-btn">
+                    <a id="forgot-password" asp-page="./ForgotPassword" style="color: white">Forgot your password?</a>
+                </p>
+                <p class="get-started-btn">
+                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" style="color: white">Resend email confirmation</a>
+                </p>
+            </div>
+            <div class="col-lg-2 col-md-1"></div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

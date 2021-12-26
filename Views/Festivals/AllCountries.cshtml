@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Countries";
+}
+@model ICollection<ClearSoundCompany.Data.Models.Rental.Country>
+
+<section>
+    <div class="container main-container" data-aos="fade-up">
+        <div class="section-title" align="center">
+            <p style="color: white">Countries</p>
+        </div>
+
+        <div class="row" style="color: white">
+            @foreach (var country in Model)
+            {
+                if (country.Festivals.Count == 0)
+                {
+                    continue;
+                }
+                <div id="country-div" class="col-lg-3 col-md-4 col-sm-6 col-12 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="25" align="center">
+                    <div class="icon-box">
+                        <a asp-area="" asp-controller="Festivals" asp-action="AllFestivalsByCountry" asp-route-id="@country.Id">
+                            <img style="height: 100px; object-fit: cover; border-radius: 10px;" src="/database_files/Flags/@(country.FlagImage.ToUpper()).png" alt="" />
+                        </a>
+                        <h4>
+                            <a asp-area="" asp-controller="Festivals" asp-action="AllFestivalsByCountry" asp-route-id="@country.Id">@country.Name</a>
+                        </h4>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- End Services Section -->

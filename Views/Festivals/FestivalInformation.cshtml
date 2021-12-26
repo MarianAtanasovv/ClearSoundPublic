@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Festival";
+
+}
+@model ClearSoundCompany.Data.Models.Rental.Festival
+
+<section>
+
+    <div class="container main-container" data-aos="fade-up">
+
+        <div class="section-title" align="center">
+            <a class="category" asp-area="" asp-controller="Festivals" asp-action="AllFestivalsByCountry" asp-route-id="@Model.CountryId">@Model.Country.Name</a>
+            <p style="color: white">@Model.Name</p>
+            <p style="color: red"><span>@Model.Date.Day</span>.<span>@Model.Date.Month</span>.<span>@Model.Date.Year</span></p>
+        </div>
+
+        <div class="row">
+            @foreach (var image in Model.FestivalImages)
+            {
+                <div id="country-div" class="col-lg-3 col-md-6 col-sm-12 p-3">
+                    <a href="/database_files/Festivals/@image.Name" data-fancybox="gallery">
+                        <img class="image_festival img-fluid" src="/database_files/Festivals/@image.Name" data-original="/database_files/Festivals/@image.Name" alt="@Model.Name" />
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "404";
+}
+<style>
+    body, html {
+        overflow: hidden;
+        margin: 0;
+        background: rgb(31, 31, 31);
+        height: 100vh;
+        box-shadow: 0 0 122px 25px black inset;
+        background-image: url("/assets/img/error.jpg");
+        background-repeat: repeat;
+        animation: noise 230ms steps(6) infinite;
+    }
+</style>
+<section>
+    <div class="main-container box">
+        <div class="glitch-wrapper">
+            <div class="glitch-text">
+                ERROR 404: Not found!
+            </div>
+        </div>
+        <button id="button_404" asp-controller="Home" asp-action="Index">
+            <a asp-controller="Home" asp-action="Index" id="button_glitch">Homepage</a>
+        </button>
+    </div>
+</section>

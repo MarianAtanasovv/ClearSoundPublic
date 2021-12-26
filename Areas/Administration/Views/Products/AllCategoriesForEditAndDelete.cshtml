@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Categories";
+}
+@model ICollection<ClearSoundCompany.Data.Models.Products.Category>
+
+<section>
+    <div class="container main-container" data-aos="fade-up">
+        <div class="section-title" align="center">
+            <p style="color: white">Categories</p>
+        </div>
+
+        <div class="row" style="color: white">
+            @foreach (var category in Model.OrderBy(i => i.Name))
+            {
+                <div class="btn btn-dark" data-aos="zoom-in" data-aos-delay="25" align="center" style="margin: 5px">
+                    <h4>
+                        <a asp-area="Administration" asp-controller="Products" asp-action="EditCategories" asp-route-id="@category.Id">@category.Name</a>
+                    </h4>
+                </div>
+            }
+        </div>
+        <a class="btn btn-success float-right" asp-area="Administration" asp-controller="Products" asp-action="AddCategory">Add Category</a>
+    </div>
+</section>

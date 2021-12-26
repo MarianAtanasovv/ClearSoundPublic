@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "All Users";
+}
+@model ICollection<ClearSoundCompany.Areas.Administration.Models.Users.UserViewModel>
+
+<section>
+    <div class="container main-container" data-aos="fade-up">
+        <div class="section-title" align="center">
+            <p style="color: red">All Users</p>
+        </div>
+        <div class="container" style="color: white" align="center">
+            @foreach (var user in Model)
+            {
+                <div class="row border border-warning rounded ">
+                    <div class="col-3 border border-white ">
+                        <p>
+                            <span style="color: rgb(0, 197, 255); font-weight: bold">Email: </span>@user.Email
+                        </p>
+                    </div>
+                    <div class="col-2 border border-white">
+                        <p>
+                            <span style="color: rgb(0, 197, 255); font-weight: bold">Email Confirmed: </span>
+                            @if (user.EmailConfirmed)
+                            {
+                                <span style="color: green">Yes</span>
+                            }
+                            else
+                            {
+                                <span style="color: red; font-weight: bold">No</span>
+                            }
+                        </p>
+                        <a class="float-right" asp-area="Administration" asp-controller="Users" asp-action="ActivateEmail" asp-route-email="@user.Email">
+                            <i style="color: greenyellow; padding: 5px" class="fas fa-check-circle fa-lg"></i>
+                        </a>
+                        <a style="color: red; padding: 5px" class="float-left" asp-area="Administration" asp-controller="Users" asp-action="DeactivateEmail" asp-route-email="@user.Email">
+                            <i class="fas fa-times-circle fa-lg"></i>
+                        </a>
+                    </div>
+                    <div class="col-2 border border-white">
+                        <p>
+                            <span style="color: rgb(0, 197, 255); font-weight: bold">Can you lock it?: </span>
+                            @if (user.CanYouLockIt)
+                            {
+                                <span style="color: green">Yes</span>
+                            }
+                            else
+                            {
+                                <span style="color: red; font-weight: bold">No</span>
+                            }
+                        </p>
+                        <a style="color: greenyellow; padding: 5px" class="float-right" asp-area="Administration" asp-controller="Users" asp-action="ActivateLocking" asp-route-email="@user.Email">
+                            <i class="fas fa-check-circle fa-lg"></i>
+                        </a>
+                        <a style="color: red; padding: 5px" class="float-left" asp-area="Administration" asp-controller="Users" asp-action="DeactivateLocking" asp-route-email="@user.Email">
+                            <i class="fas fa-times-circle fa-lg"></i>
+                        </a>
+                    </div>
+                    <div class="col-2 border border-white">
+                        <p>
+                            <span style="color: rgb(0, 197, 255); font-weight: bold">Phone: </span>@user.Phone
+                        </p>
+                    </div>
+                    <div class="col-1 border border-white">
+                        <p>
+                            <span style="color: rgb(0, 197, 255); font-weight: bold">Access Failed Count: </span>@user.AccessFailedCount
+                        </p>
+                    </div>
+                    <div class="col-2 border border-white">
+                        <p>
+                            @if (user.LockoutDate == null)
+                            {
+                                <span style="color: green">Unlocked</span>
+                            }
+                            else
+                            {
+                                <span style="color: red; font-weight: bold">Locked until: @user.LockoutDate @user.LockoutTime</span>
+                            }
+                        </p>
+                        <a style="color: greenyellow; padding: 5px" class="float-left" asp-area="Administration" asp-controller="Users" asp-action="UnlockAccount" asp-route-email="@user.Email">
+                            <i class="fas fa-unlock-alt fa-lg"></i>
+                        </a>
+                        <a style="color: red; padding: 5px" class="float-right" asp-area="Administration" asp-controller="Users" asp-action="LockAccount" asp-route-email="@user.Email">
+                            <i class="fas fa-lock fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                <br />
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Categories";
+    bool firstSlide = true;
+}
+@model ICollection<ClearSoundCompany.Data.Models.Products.Category>
+
+<section>
+    <div class="container main-container" data-aos="fade-up">
+        <div class="section-title" align="center">
+            <p style="color: white">Categories</p>
+        </div>
+
+        <div class="row" style="color: white">
+            @foreach (var category in Model)
+            {
+                if (category.Products.Count == 0)
+                {
+                    continue;
+                }
+                <div class="col-lg-3 col-md-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="25" align="center">
+                    <div class="icon-box">
+                        <div id="carouselExampleFade" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <a asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@category.Id">
+                                        <img class="d-block w-100" src="/database_files/Products/@category.Products.FirstOrDefault()?.ProfileImage" alt="" />
+                                    </a>
+                                </div>
+                                @foreach (var product in category.Products)
+                                {
+                                    if (firstSlide)
+                                    {
+                                        firstSlide = false;
+                                        continue;
+                                    }
+                                    <div class="carousel-item">
+                                        <a asp-area="" asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@category.Id">
+                                            <img class="d-block w-100" src="/database_files/Products/@product.ProfileImage" alt="" />
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <h4>
+                            <a asp-area="" asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@category.Id">@category.Name</a>
+                        </h4>
+                    </div>
+                </div>
+                firstSlide = true;
+            }
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+        $('.carousel').carousel({
+            interval: 2500
+        })
+    </script>
+}

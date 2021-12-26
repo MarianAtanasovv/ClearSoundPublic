@@ -1,0 +1,37 @@
+﻿@{ if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
+                {
+                    Layout = (string)parentLayout;
+                }
+                else
+                {
+                    // ReSharper disable once Razor.LayoutNotResolved
+                    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+                } }
+
+<section>
+    <div class="container">
+        <div class="container main-container">
+            <div class="section-title" align="center">
+                <p style="color: white">Manage your account</p>
+            </div>
+
+            <div style="color: white">
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        @* ReSharper disable once Mvc.ViewNotResolved *@
+                        <partial name="_ManageNav" />
+                    </div>
+                    <hr />
+                    <div class="col-md-9">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @RenderSection("Scripts", false)
+}

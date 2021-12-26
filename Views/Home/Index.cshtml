@@ -1,0 +1,46 @@
+﻿@{ ViewData["Title"] = "Home Page"; }
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+            <div class="col-lg-12">
+                <h1>Feel the <span>SOUND</span>!</h1>
+                <h2>Professional solutions for everyone</h2>
+            </div>
+        </div>
+        <div class="row mt-5 justify-content-center" data-aos="zoom-in" data-aos-delay="250">
+
+            <div class="col-md-3 col-12 mt-4 mt-md-0 ">
+                <a asp-controller="About" asp-action="FAQ">
+                    <div class="icon-box">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>
+                            You have questions?
+                        </h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-12 mt-4 mt-md-0 ">
+                <a asp-controller="Products" asp-action="AllNewProducts">
+                    <div class="icon-box">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3>
+                            New Products
+                        </h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-12 mt-4 mt-md-0 ">
+                <a href="">
+                    <div class="icon-box">
+                        <i class="fas fa-drafting-compass"></i>
+                        <h3 style="font-size: 97%" href="">
+                            Sample Configurations
+                        </h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
