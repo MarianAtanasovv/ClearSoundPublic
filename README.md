@@ -1,27 +1,21 @@
-# ClearSoundCompany_Public
+# ClearSoundCompany - Public
 
 Project Specification
 
 "ClearSoundCompany" it's built on ASP.NET CORE 5.0 and it's using SQL Server for storing data. The application has users, products, festivals, cart for orders. Each user can register, login and make an order. Users can view company's products and check details about them. Admins can add, remove, edit and delete products, users and festivals
 
-🔨 Built With
+## 🔨 Built With
 
-ASP.NET CORE 5.0 MVC
+- ASP.NET CORE 5.0 MVC
+- ASP.NET CORE View Components
+- ASP.NET CORE Areas
+- MSSQL Server
+- Bootstrap
+- CSS
+- Javascript
+- HTML
 
-ASP.NET CORE View Components
-
-ASP.NET CORE Areas
-
-MSSQL Server
-
-Bootstrap
-
-CSS
-
-Javascript
-
-HTML
-
+## Pictures
 [![Screenshot-7.png](https://i.postimg.cc/C1B79yYW/Screenshot-7.png)](https://postimg.cc/jwTyJFDX)
 
 
@@ -38,7 +32,7 @@ HTML
 
 
 
-Database Diagram
+## Database Diagram
 [![Untitled.png](https://i.postimg.cc/ZKyHwzj3/Untitled.png)](https://postimg.cc/7fwSLcFY)
 
 
