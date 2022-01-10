@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="/assets/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap-5.1.3-dist/css/bootstrap.css" rel="stylesheet">
     <link href="/assets/vendor/icofont/icofont.min.css" rel="stylesheet">
     <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
     <link href="/assets/vendor/venobox/venobox.css" rel="stylesheet">
@@ -36,7 +36,8 @@
     <link href="/assets/css/style.css" rel="stylesheet">
 
     <!-- Include Summernote css/js-->
-    <link href="/assets/vendor/summernote-0.8.18-dist/summernote-bs4.css" rel="stylesheet">
+    <link href="/assets/vendor/summernote-0.8.20/dist/summernote-lite.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -114,7 +115,15 @@
             {
                 @if (!User.IsInRole("Administrator"))
                 {
-                    <a class="get-started-cart-btn" asp-area="" asp-controller="Carts" asp-action="Index">
+                   /* <a  class="get-started-cart-btn position-relative" asp-area="" asp-controller="Carts" asp-action="Index">
+                        <i style="font-size: 17px;" class="fas fa-shopping-basket"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            99+
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </a>
+                   */
+                    <a class="get-started-cart-btn"  asp-area="" asp-controller="Carts" asp-action="Index" >
                         <i style="font-size: 17px;" class="fas fa-shopping-basket"></i>
                     </a>
                 }
@@ -134,7 +143,7 @@
 <main id="main">
 
     <div id="js-notification-add-product">
-        <div class="container" id="global-info-alert" data-aos="fade-up" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+        <div class="container" id="global-info-alert" data-aos="fade-up" >
             <div class="alert" id="global-alert-box" role="alert">
                 <span id="global-alert-text">-</span>
             </div>
@@ -142,35 +151,33 @@
     </div>
     @if (TempData["alertSuccess"] != null)
     {
-        <div class="container" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
-            <div class="alert alert-success">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
-                @TempData["alertSuccess"].ToString()
-            </div>
+        <div class="container alert alert-success alert-dismissible fade show" role="alert" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            @TempData["alertSuccess"].ToString()
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+        
     }
     @if (TempData["alertWarning"] != null)
     {
-        <div class="container" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
-                @TempData["alertWarning"].ToString()
-            </div>
+        <div class="container alert alert-warning alert-dismissible fade show" role="alert" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            @TempData["alertWarning"].ToString()
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
     @if (TempData["alertDanger"] != null)
     {
-        <div class="container" style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
-            <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
-                @TempData["alertDanger"].ToString()
-            </div>
+        <div class="container alert alert-danger alert-dismissible fade show" role="alert"  style="top: 120px; left: 0; right: 0; position: absolute; margin-left: auto; margin-right: auto; width: auto">
+            @TempData["alertDanger"].ToString()
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+
     }
+   
     @RenderBody()
 </main>
 
 <!-- ======= Footer ======= -->
+
 <footer id="footer">
     <div class="footer-top" align="center">
         <div class="footer-info">
@@ -204,22 +211,22 @@
             &copy; @DateTime.UtcNow.Year -
             <strong>
                 <span>Clear Sound Ltd.</span>
-            </strong> All Rights Reserved
+            </strong> All Rights Reserved.
         </div>
     </div>
 </footer>
 <!-- End Footer -->
 <!-- Vendor JS Files -->
 <script src="/assets/vendor/jquery/jquery.min.js"></script>
-<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+<script src="/assets/vendor/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
 <script src="/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
 <script src="/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
 <script src="/assets/vendor/venobox/venobox.min.js"></script>
 <script src="/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
 <script src="/assets/vendor/counterup/counterup.min.js"></script>
 <script src="/assets/vendor/aos/aos.js"></script>
-<script src="/assets/vendor/summernote-0.8.18-dist/summernote-bs4.js"></script>
-<script src="/assets/vendor/js-cloudimage-360-view-master/js-cloudimage-360-view-master/build/js-cloudimage-360-view.min.js"></script>
+<script src="/assets/vendor/summernote-0.8.20/dist/summernote-lite.js"></script>
+<script src="/assets/vendor/js-cloudimage-360-view-2.7.1/build/js-cloudimage-360-view.min.js"></script>
 <script src="/assets/vendor/fancybox-4.0.6/fancybox.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
@@ -238,12 +245,14 @@
     }
 
     function myFunction() {
-        notification = setTimeout(function() { $("#global-info-alert").slideUp(500); }, 1000);
+        notification = setTimeout(function() { $("#global-info-alert").slideUp(500); }, 1500);
     }
 
+
     function addProduct(id) {
-        var form = $('#__AjaxAntiForgeryForm');
-        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        const form = $('#__AjaxAntiForgeryForm');
+        const token = $('input[name="__RequestVerificationToken"]', form).val();
+
         $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddProductCart", "Carts")',

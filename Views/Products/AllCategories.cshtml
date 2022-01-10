@@ -19,11 +19,13 @@
                 }
                 <div class="col-lg-3 col-md-4 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="25" align="center">
                     <div class="icon-box">
-                        <div id="carouselExampleFade" class="carousel slide" data-ride="carousel">
+
+
+                        <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
+                                <div class="carousel-item active" >
                                     <a asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@category.Id">
-                                        <img class="d-block w-100" src="/database_files/Products/@category.Products.FirstOrDefault()?.ProfileImage" alt="" />
+                                        <img class="d-block w-100" src="/database_files/Products/@category.Products.FirstOrDefault()?.ProfileImage" alt=""/>
                                     </a>
                                 </div>
                                 @foreach (var product in category.Products)
@@ -35,7 +37,7 @@
                                     }
                                     <div class="carousel-item">
                                         <a asp-area="" asp-controller="Products" asp-action="AllProductsByCategory" asp-route-id="@category.Id">
-                                            <img class="d-block w-100" src="/database_files/Products/@product.ProfileImage" alt="" />
+                                            <img class="d-block w-100" src="/database_files/Products/@product.ProfileImage" alt=""/>
                                         </a>
                                     </div>
                                 }
@@ -53,10 +55,14 @@
     </div>
 </section>
 
+
 @section scripts{
-    <script type="text/javascript">
-        $('.carousel').carousel({
-            interval: 2500
-        })
+    <script type='text/javascript'>
+        var myCarousel = document.querySelector('#carouselExampleFade');
+        var carousel = new bootstrap.Carousel(myCarousel,
+            {
+                interval: 2000,
+                wrap: false
+            })
     </script>
 }

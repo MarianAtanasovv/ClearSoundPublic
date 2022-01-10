@@ -19,7 +19,7 @@ namespace ClearSoundCompany.Services
             try
             {
                 var postTask = await _captchaClient
-                    .PostAsync($"?secret=&response={captcha}", new StringContent(""));
+                    .PostAsync($"", new StringContent(""));
                 var result = await postTask.Content.ReadAsStringAsync();
                 var resultObject = JObject.Parse(result);
                 dynamic success = resultObject["success"];

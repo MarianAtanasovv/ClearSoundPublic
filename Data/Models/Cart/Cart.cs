@@ -9,11 +9,18 @@ namespace ClearSoundCompany.Data.Models.Cart
     {
         [Required]
         public string Id { get; set; } = Guid.NewGuid().ToString();
+
         [Required] public string UserId { get; set; }
+
         [Range(2, 50)] public int Quantity { get; set; }
+
         [Required] public string ProductId { get; set; }
         public Product Product { get; set; }
+
         public Color Color { get; set; }
+
+        public string ProfileImageName { get; set; }
+
         public bool MixedColor { get; set; } = false;
     }
 }

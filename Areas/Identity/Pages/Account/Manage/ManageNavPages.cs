@@ -7,8 +7,7 @@ namespace ClearSoundCompany.Areas.Identity.Pages.Account.Manage
     public static class ManageNavPages
     {
         public static string Index => "Index";
-
-        public static string Email => "Email";
+        
 
         public static string ChangePassword => "ChangePassword";
 
@@ -18,11 +17,7 @@ namespace ClearSoundCompany.Areas.Identity.Pages.Account.Manage
         {
             return PageNavClass(viewContext, Index);
         }
-
-        public static string EmailNavClass(ViewContext viewContext)
-        {
-            return PageNavClass(viewContext, Email);
-        }
+        
 
         public static string ChangePasswordNavClass(ViewContext viewContext)
         {

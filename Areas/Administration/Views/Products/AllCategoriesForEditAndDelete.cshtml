@@ -12,13 +12,13 @@
         <div class="row" style="color: white">
             @foreach (var category in Model.OrderBy(i => i.Name))
             {
-                <div class="btn btn-dark" data-aos="zoom-in" data-aos-delay="25" align="center" style="margin: 5px">
-                    <h4>
+                <div class="btn btn-dark" data-aos="zoom-in" align="center" style="margin: 5px">
+                    <h3>
                         <a asp-area="Administration" asp-controller="Products" asp-action="EditCategories" asp-route-id="@category.Id">@category.Name</a>
-                    </h4>
+                    </h3>
                 </div>
             }
         </div>
-        <a class="btn btn-success float-right" asp-area="Administration" asp-controller="Products" asp-action="AddCategory">Add Category</a>
+        <a class="btn btn-success float-end" asp-area="Administration" asp-controller="Products" asp-action="AddCategory">Add Category</a>
     </div>
 </section>

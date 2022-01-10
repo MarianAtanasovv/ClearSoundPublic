@@ -35,12 +35,12 @@ namespace ClearSoundCompany.Controllers
         public IActionResult AllProductsByCategory(string id)
         {
             var products = _productServices.AllProductsByCategory(id);
-            if (products != null)
+            if (products != null && products.Count>0)
             {
                 return View(products);
             }
 
-            return RedirectToAction("Error404", new {message = "Category NOT found!"});
+            return RedirectToAction("Error404");
         }
 
         //View for all information for specific Product

@@ -12,6 +12,7 @@ namespace ClearSoundCompany.Models.Contacts
         [MinLength(4)]
         public string Subject { get; set; }
 
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
 

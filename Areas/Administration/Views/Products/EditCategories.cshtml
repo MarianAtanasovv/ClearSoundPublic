@@ -22,7 +22,7 @@
                 <label asp-for="IsAddable" class="form-check-label" for="exampleCheck1">Can ALL Products from this Category be added to the cart? </label>
             </div>
 
-            <input class="btn btn-success float-right" type="submit" value="Save">
+            <input class="btn btn-success float-end" type="submit" value="Save">
         </form>
         <form method="post" asp-area="Administration" asp-controller="Products" asp-action="DeleteCategory" asp-route-id="@Model.Id" id="deleteForm">
         </form>

@@ -64,10 +64,17 @@ namespace ClearSoundCompany.Services.Carts
                         colorCollection.Add(regColor);
                     }
 
-                    if (profilePictureColor == string.Empty && cartProduct.Color == color)
+                    if (profilePictureColor == string.Empty && cartProduct.Color == color &&
+                        product.ProductImages.Count > 73)
                     {
-                        
-                        profilePictureColor =$"{regexImage.Groups["Name"]}_{regexImage.Groups["Color"]}.7.{regexImage.Groups["Extension"]}";
+                        profilePictureColor =
+                            $"{regexImage.Groups["Name"]}_{regexImage.Groups["Color"]}.7.{regexImage.Groups["Extension"]}";
+                        selectedColor = regColor;
+                    }
+                    else if (profilePictureColor == string.Empty && cartProduct.Color == color)
+                    {
+                        profilePictureColor =
+                            $"{regexImage.Groups["Name"]}_{regexImage.Groups["Color"]}.{regexImage.Groups["Index"]}.{regexImage.Groups["Extension"]}";
                         selectedColor = regColor;
                     }
                 }
@@ -84,7 +91,8 @@ namespace ClearSoundCompany.Services.Carts
                     Colors = colorCollection,
                     SelectedColor = selectedColor
                 };
-
+                _data.Carts.FirstOrDefault(i => i.Id == cartProduct.Id).ProfileImageName = profilePictureColor;
+                _data.SaveChanges();
                 newList.Add(newProduct);
 
                 totalPrice += newProduct.Price * newProduct.Quantity;
@@ -104,15 +112,15 @@ namespace ClearSoundCompany.Services.Carts
             {
                 if (totalPrice >= CartConstant.MinimumPriceForDiscount)
                 {
-                    if (totalPrice / 1000 <= 45)
+                    if (totalPrice / 1000 <= CartConstant.MaximumPercentageForDiscount)
                     {
-                        discount = totalPrice * (Math.Floor(totalPrice / 100000));
+                        discount = totalPrice * (Math.Floor(totalPrice / 1000)) / 100;
                         discountPercentage = Math.Floor(totalPrice / 1000);
                     }
                     else
                     {
-                        discount = totalPrice * 0.45;
-                        discountPercentage = 45;
+                        discount = totalPrice * CartConstant.MaximumPercentageForDiscount / 100;
+                        discountPercentage = CartConstant.MaximumPercentageForDiscount;
                     }
                 }
             }
@@ -129,7 +137,63 @@ namespace ClearSoundCompany.Services.Carts
             return model;
         }
 
-        public bool SubmitOrder(string userIdValue)
+        public List<OrderCartArchiveViewModel> Archive(string userIdValue)
+        {
+            var newList = new List<OrderCartArchiveViewModel>();
+
+            var allCartArchiveProducts = AllCartArchiveProductsForUser(userIdValue);
+
+            var groupsOrdersByDate = allCartArchiveProducts.GroupBy(i => i.OrderDate.Date);
+
+            foreach (var group in groupsOrdersByDate)
+            {
+                double totalPrice = 0;
+                double paintAddition = 0;
+                var discount = 0.00;
+                var discountPercentage = 0.00;
+                var numberOfAllProducts = 0;
+                var newOrderCartArchiveModel = new OrderCartArchiveViewModel();
+                foreach (var cartArchiveProduct in group)
+                {
+                    newOrderCartArchiveModel.Products.Add(cartArchiveProduct);
+                    totalPrice += (cartArchiveProduct.Price * cartArchiveProduct.Quantity);
+                    if (cartArchiveProduct.MixedColor)
+                    {
+                        paintAddition += cartArchiveProduct.PaintAudition * cartArchiveProduct.Quantity;
+                    }
+
+                    numberOfAllProducts += cartArchiveProduct.Quantity;
+                }
+
+                if (numberOfAllProducts > group.FirstOrDefault().MinimumProductsQuantityForDiscount)
+                {
+                    if (totalPrice >= group.FirstOrDefault().MinimumPriceForDiscount)
+                    {
+                        if (totalPrice / 1000 <= group.FirstOrDefault().MaximumPercentageForDiscount)
+                        {
+                            discount = totalPrice * Math.Floor(totalPrice / 1000) / 100;
+                            discountPercentage = Math.Floor(totalPrice / 1000);
+                        }
+                        else
+                        {
+                            discount = totalPrice * group.FirstOrDefault().MaximumPercentageForDiscount / 100;
+                            discountPercentage = group.FirstOrDefault().MaximumPercentageForDiscount;
+                        }
+                    }
+                }
+
+                newOrderCartArchiveModel.DiscountPercentage = discountPercentage;
+                newOrderCartArchiveModel.DiscountPrice = Math.Round(discount);
+                newOrderCartArchiveModel.PaintingAddition = paintAddition;
+                newOrderCartArchiveModel.TotalPrice = Math.Round(totalPrice);
+
+                newList.Add(newOrderCartArchiveModel);
+            }
+
+            return newList;
+        }
+
+        public void SubmitOrder(string userIdValue)
         {
             var cartProductsCollection = AllCartProductsForUser(userIdValue);
 
@@ -165,15 +229,15 @@ namespace ClearSoundCompany.Services.Carts
 
             if (totalPrice >= CartConstant.MinimumPriceForDiscount)
             {
-                if (totalPrice / 1000 <= 45)
+                if (totalPrice / 1000 <= CartConstant.MaximumPercentageForDiscount)
                 {
-                    discount = totalPrice * (Math.Floor(totalPrice / 100000));
+                    discount = totalPrice * (Math.Floor(totalPrice / 1000)) / 100;
                     discountPercentage = Math.Floor(totalPrice / 1000);
                 }
                 else
                 {
-                    discount = totalPrice * 0.45;
-                    discountPercentage = 45;
+                    discount = totalPrice * CartConstant.MaximumPercentageForDiscount / 100;
+                    discountPercentage = CartConstant.MaximumPercentageForDiscount;
                 }
             }
 
@@ -190,6 +254,7 @@ namespace ClearSoundCompany.Services.Carts
 
             emailNew.SendEmailAsync("csc_audio@abv.bg", subject, messageNew);
 
+            ArchiveOrder(cartProductsCollection, userIdValue);
 
             foreach (var cart in cartProductsCollection)
             {
@@ -197,8 +262,31 @@ namespace ClearSoundCompany.Services.Carts
             }
 
             _data.SaveChanges();
+        }
 
-            return true;
+        private void ArchiveOrder(ICollection<Cart> cartProducts, string userId)
+        {
+            foreach (var cartProduct in cartProducts)
+            {
+                var newCartArchive = new CartArchive()
+                {
+                    UserId = userId,
+                    Quantity = cartProduct.Quantity,
+                    ProductId = cartProduct.ProductId,
+                    OrderDate = DateTime.Now,
+                    Color = cartProduct.Color,
+                    ImageName = cartProduct.ProfileImageName,
+                    MixedColor = cartProduct.MixedColor,
+                    MaximumPercentageForDiscount = CartConstant.MaximumPercentageForDiscount,
+                    MinimumPriceForDiscount = CartConstant.MinimumPriceForDiscount,
+                    MinimumProductsQuantityForDiscount = CartConstant.MinimumProductsQuantityForDiscount,
+                    PaintAudition = CartConstant.PaintAudition,
+                    Price = cartProduct.Product.Price
+                };
+                _data.CartArchive.Add(newCartArchive);
+            }
+
+            _data.SaveChanges();
         }
 
         public bool AddProductQuantity(string userIdValue, string productId)
@@ -303,6 +391,7 @@ namespace ClearSoundCompany.Services.Carts
             {
                 ifProductExistInCart = null;
             }
+
             if (ifProductExistInCart is {Quantity: < 50})
             {
                 ifProductExistInCart.Quantity++;
@@ -316,12 +405,26 @@ namespace ClearSoundCompany.Services.Carts
                 var categoryQuantity =
                     _data.Categories.FirstOrDefault(i => i.Id == product.CategoryId).MinimumQuantity;
 
+                var profilePictureColor = string.Empty;
+
+                if (product.ProductImages.Count > 73)
+                {
+                    profilePictureColor =
+                        $"{regexImage.Groups["Name"]}_{regexImage.Groups["Color"]}.7.{regexImage.Groups["Extension"]}";
+                }
+                else
+                {
+                    profilePictureColor =
+                        $"{regexImage.Groups["Name"]}_{regexImage.Groups["Color"]}.{regexImage.Groups["Index"]}.{regexImage.Groups["Extension"]}";
+                }
+
                 var newCartProduct = new Cart()
                 {
                     UserId = userIdValue,
                     Quantity = categoryQuantity,
                     ProductId = productId,
-                    Color = color
+                    Color = color,
+                    ProfileImageName = profilePictureColor
                 };
                 _data.Carts.Add(newCartProduct);
                 message =
@@ -405,9 +508,45 @@ namespace ClearSoundCompany.Services.Carts
             var allCartProductsForGivenUser = _data
                 .Carts
                 .Where(i => i.UserId == userIdValue)
+                .Include(i => i.Product)
                 .ToList();
 
             return allCartProductsForGivenUser;
+        }
+
+        private ICollection<CartArchiveModel> AllCartArchiveProductsForUser(string userIdValue)
+        {
+            var allCartArchivesProductsForGivenUser = _data
+                .CartArchive
+                .Where(i => i.UserId == userIdValue)
+                .Include(i => i.Product)
+                .ThenInclude(i => i.Category)
+                .ToList();
+
+            ICollection<CartArchiveModel> newCartArchiveModels = new List<CartArchiveModel>();
+
+            foreach (var cartArchive in allCartArchivesProductsForGivenUser)
+            {
+                var newCartArchiveModel = new CartArchiveModel()
+                {
+                    Id = cartArchive.Id,
+                    Color = cartArchive.Color,
+                    ImageName = cartArchive.ImageName,
+                    MixedColor = cartArchive.MixedColor,
+                    OrderDate = cartArchive.OrderDate,
+                    Quantity = cartArchive.Quantity,
+                    Price = cartArchive.Price / cartArchive.Quantity,
+                    Product = cartArchive.Product,
+                    UserId = cartArchive.UserId,
+                    MaximumPercentageForDiscount = cartArchive.MaximumPercentageForDiscount,
+                    MinimumPriceForDiscount = cartArchive.MinimumPriceForDiscount,
+                    MinimumProductsQuantityForDiscount = cartArchive.MinimumProductsQuantityForDiscount,
+                    PaintAudition = cartArchive.MinimumProductsQuantityForDiscount
+                };
+                newCartArchiveModels.Add(newCartArchiveModel);
+            }
+
+            return newCartArchiveModels;
         }
     }
 }

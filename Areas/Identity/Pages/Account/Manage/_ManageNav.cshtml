@@ -1,33 +1,15 @@
 ﻿@inject SignInManager<IdentityUser> _signInManager
 @{ var hasExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).Any(); }
-<style>
-    .tester {
-        display: block;
-        padding: .5rem 1rem;
-        border-radius: 4px;
-        border: 2px solid #DA0000;
-        color: #fff;
-        margin: 2px
-    }
 
-        .tester.active {
-            display: block;
-            padding: .5rem 1rem;
-            border-radius: .25rem;
-            color: #fff;
-            background-color: #DA0000;
-            margin: 2px
-        }
-</style>
 <ul class="nav nav-pills flex-column">
     <li class="nav-item">
         <a class="tester @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index"> Profile</a>
     </li>
     <li class="nav-item">
-        <a class="tester @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email"> Email</a>
+        <a class="tester @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword"> Password</a>
     </li>
     <li class="nav-item">
-        <a class="tester @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword"> Password</a>
+        <a class="tester" asp-controller="Carts" asp-action="Archive" asp-area="">Archive</a>
     </li>
     @if (hasExternalLogins)
     {

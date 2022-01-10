@@ -251,9 +251,9 @@ namespace ClearSoundCompany.Infrastructure
                     var role = new IdentityRole {Name = "Administrator"};
                     await roleManager.CreateAsync(role);
 
-                    const string adminUsername = "cscproaudio@cscproaudio.com";
-                    const string adminEmail = "cscproaudio@cscproaudio.com";
-                    const string adminPassword = "aTyAbue8R4izb&*g";
+                    const string adminUsername = "";
+                    const string adminEmail = "";
+                    const string adminPassword = "";
 
                     var user = new IdentityUser
                     {

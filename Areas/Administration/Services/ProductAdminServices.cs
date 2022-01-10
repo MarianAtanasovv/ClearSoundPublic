@@ -211,7 +211,7 @@ namespace ClearSoundCompany.Areas.Administration.Services
             _data.SaveChanges();
         }
 
-        //View for Deleting image
+        //View all images (for Deleting)
         public Product AllImagesForProduct(string id)
         {
             var images = _data

@@ -76,7 +76,7 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
             _data.Festivals.Add(festivalData);
             _data.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         //View for Editing a specific Festvial

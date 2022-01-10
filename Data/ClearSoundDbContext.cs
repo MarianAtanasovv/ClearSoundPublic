@@ -59,12 +59,11 @@ namespace ClearSoundCompany.Data
 
             builder
                 .Entity<Cart>()
-                .HasKey(c => new { c.UserId, c.ProductId });
-            
+                .HasOne(c => c.Product);
 
             builder
                 .Entity<CartArchive>()
-                .HasKey(c => new { c.UserId, c.ProductId });
+                .HasOne(c => c.Product);
 
             base.OnModelCreating(builder);
         }

@@ -8,28 +8,29 @@
             <p style="color: white">Edit <span style="color: red">@Model.Name</span></p>
         </div>
         <form method="Post" enctype="multipart/form-data" style="color: white">
-            <div class="form-group">
-                <label asp-for="Name">Name</label>
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="form-group mb-3">
+                <label class="mb-1" asp-for="Name">Name</label>
                 <input asp-for="Name" class="form-control" placeholder="Enter the Name of the festival here (example: Voov)">
                 <span asp-validation-for="Name" class="small text-danger"></span>
             </div>
-            <div class="form-group" inline="true">
-                <label asp-for="Date">Date</label>
+            <div class="form-group mb-3" inline="true">
+                <label class="mb-1" asp-for="Date">Date</label>
                 <input asp-for="Date" placeholder="Select date" type="date" id="example" class="form-control">
 
                 <span asp-validation-for="Date" class="small text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="CountryId"></label>
+            <div class="form-group mb-3">
+                <label class="mb-1" asp-for="CountryId"></label>
                 <select asp-for="CountryId" class="form-control">
                     @foreach (var country in Model.Countries.OrderBy(a => a.Name))
                     {
-        <option value="@country.Id">@country.Name</option>}
+                        <option value="@country.Id">@country.Name</option>}
                 </select>
             </div>
 
-            <input class="btn btn-primary float-right" type="submit" value="Save">
+            <input class="btn btn-primary float-end" type="submit" value="Save">
         </form>
     </div>
 </section>

@@ -8,37 +8,35 @@
             <p>Add <span style="color: rgb(235, 56, 56) ">New</span> Festival</p>
         </div>
         <form method="Post" enctype="multipart/form-data" style="color: white">
-            <div class="form-group">
-                <label asp-for="Name">Name</label>
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="form-group mb-3">
+                <label class="mb-1" asp-for="Name">Name</label>
                 <input asp-for="Name" class="form-control" placeholder="Enter the Name of the festival here (example: Voov)">
                 <span asp-validation-for="Name" class="small text-danger"></span>
             </div>
-            <div class="form-group" inline="true">
-                <label asp-for="Date">Date</label>
+            <div class="form-group mb-3" inline="true">
+                <label class="mb-1" asp-for="Date">Date</label>
                 <input asp-for="Date" placeholder="Select date" type="date" id="example" class="form-control">
 
                 <span asp-validation-for="Date" class="small text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="CountryId"></label>
+            <div class="form-group mb-3">
+                <label class="mb-1" asp-for="CountryId"></label>
                 <select asp-for="CountryId" class="form-control">
                     @foreach (var country in Model.Countries.OrderBy(a => a.Name))
                     {
-        <option value="@country.Id">@country.Name</option>}
+                        <option value="@country.Id">@country.Name</option>}
                 </select>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Images" class="control-label"></label>
-                <div class="custom-file">
-                    <input asp-for="Images" class="custom-file-input" id="customFile" multiple>
-                    <label class="custom-file-label" for="customFile">Choose images</label>
-                </div>
-                <span asp-validation-for="Images" class="text-danger"></span>
+            <div class="mb-3">
+                <label asp-for="Images" for="formFileMultiple" class="form-label mb-1"></label>
+                <input asp-for="Images" class="form-control" type="file" id="formFileMultiple" multiple>
+                <span asp-validation-for="Images" class="small text-danger"></span>
             </div>
 
-            <input class="btn btn-success float-right" type="submit" value="Save">
+            <input class="btn btn-success float-end" type="submit" value="Save">
         </form>
     </div>
 </section>

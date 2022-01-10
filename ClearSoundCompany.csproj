@@ -32,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Administration\Views\Carts\" />
     <Folder Include="Data\Models\Cart\" />
     <Folder Include="Services\Contacts\" />
     <Folder Include="wwwroot\database_files\Products\" />

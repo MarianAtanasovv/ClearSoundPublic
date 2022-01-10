@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ClearSoundCompany.Areas.Administration.Models.Users;
+using ClearSoundCompany.Services.Carts;
 
 namespace ClearSoundCompany.Areas.Administration.Controllers
 {
@@ -13,9 +14,11 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
     public class UsersController : Controller
     {
         private readonly ClearSoundDbContext _data;
+        private readonly CartServices _cartServices;
 
-        public UsersController(ClearSoundDbContext data)
+        public UsersController(ClearSoundDbContext data, CartServices cartServices)
         {
+            _cartServices = cartServices;
             _data = data;
         }
 
@@ -23,6 +26,7 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
         {
             var allUsers = _data.Users;
             var collectionUsers = new List<UserViewModel>();
+
             if (_data.UserRoles == null) return View(collectionUsers);
 
             var adminId = _data.UserRoles.FirstOrDefault().UserId;
@@ -35,6 +39,7 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
 
                 var newUser = new UserViewModel
                 {
+                    Id = user.Id,
                     Email = user.Email,
                     AccessFailedCount = user.AccessFailedCount,
                     EmailConfirmed = user.EmailConfirmed,
@@ -53,6 +58,16 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
             return View(collectionUsers);
         }
 
+        public IActionResult Orders(string id)
+        {
+            var model = _cartServices.Archive(id);
+            return View("~/Views/Carts/Archive.cshtml", model);
+        }
+        public IActionResult Cart(string id)
+        {
+            var model = _cartServices.Index(id);
+            return View("~/Views/Carts/Index.cshtml", model);
+        }
         public IActionResult LockAccount(string email)
         {
             var user = _data.Users.FirstOrDefault(i => i.Email == email);

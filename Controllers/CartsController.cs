@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
@@ -15,8 +16,7 @@ namespace ClearSoundCompany.Controllers
         {
             _cartServices = cartServices;
         }
-
-        //Index page for showing all products inside the cart
+        
         public IActionResult Index()
         {
             var userIdValue = GetUserId();
@@ -28,21 +28,33 @@ namespace ClearSoundCompany.Controllers
             return View(model);
         }
 
+        public IActionResult Archive()
+        {
+            var userIdValue = GetUserId();
+
+            if (userIdValue == null) return View();
+            var model = _cartServices.Archive(userIdValue);
+
+            return View(model);
+        }
+
         public IActionResult SubmitOrder()
         {
             var userIdValue = GetUserId();
             if (userIdValue == null) return RedirectToAction("Index", "Carts");
 
-            var submittedCorrectly = _cartServices.SubmitOrder(userIdValue);
-            if (submittedCorrectly)
+
+            try
             {
+                _cartServices.SubmitOrder(userIdValue);
                 TempData["alertSuccess"] =
                     "Your order was submitted! Please wait a few days for it to be processed - the proforma will be send to your email address!";
             }
-            else
+            catch (Exception exception)
             {
+                
                 TempData["alertDanger"] =
-                    "There is a problem";
+                    $"There is a problem... Please try again later{exception}";
             }
 
             return RedirectToAction("Index", "Carts");
@@ -61,6 +73,50 @@ namespace ClearSoundCompany.Controllers
             }
 
             return RedirectToAction("Index", "Carts");
+        }
+
+        public JsonResult AddProductQuantityJsonResult(string productId)
+        {
+            var isItOkey = false;
+            var message = "Operation failed";
+
+            var userIdValue = GetUserId();
+
+            if (userIdValue == null) return Json(new {success = isItOkey, msg = message});
+
+            if (!_cartServices.AddProductQuantity(userIdValue, productId))
+            {
+                message = "Maximum quantity limit is reached!";
+                return Json(new {success = isItOkey, msg = message});
+            }
+
+            var model = _cartServices.Index(userIdValue);
+            isItOkey = true;
+            // return RedirectToAction("Index", "Carts");
+
+            return Json(new {success = isItOkey, msg = model});
+        }
+
+        public JsonResult RemoveProductQuantityJsonResult(string productId)
+        {
+            var isItOkey = false;
+            var message = "Operation failed";
+
+            var userIdValue = GetUserId();
+
+            if (userIdValue == null) return Json(new {success = isItOkey, msg = message});
+
+            if (!_cartServices.RemoveProductQuantity(userIdValue, productId))
+            {
+                message = "Minimum quantity limit is reached!";
+                return Json(new {success = isItOkey, msg = message});
+            }
+
+            var model = _cartServices.Index(userIdValue);
+            isItOkey = true;
+            // return RedirectToAction("Index", "Carts");
+
+            return Json(new {success = isItOkey, msg = model});
         }
 
         [HttpGet]
@@ -119,17 +175,17 @@ namespace ClearSoundCompany.Controllers
             return Json(new {success = isItOkey, msg = message});
         }
 
-        public IActionResult AddProductCartDifferentColor(string productId)
-        {
-            var userIdValue = GetUserId();
-            if (userIdValue != null)
-            {
-                _cartServices.AddProductCartDifferentColor(userIdValue, productId);
-            }
-
-            return RedirectToAction("Index", "Carts");
-        }
-
+        /* public IActionResult AddProductCartDifferentColor(string productId)
+         {
+             var userIdValue = GetUserId();
+             if (userIdValue != null)
+             {
+                 _cartServices.AddProductCartDifferentColor(userIdValue, productId);
+             }
+ 
+             return RedirectToAction("Index", "Carts");
+         }
+        */
 
         //Change product color
         [HttpGet]
@@ -144,6 +200,7 @@ namespace ClearSoundCompany.Controllers
             return RedirectToAction("Index", "Carts");
         }
 
+        //Getting User Id. Returns Null if somethings is wrong :P 
         private string GetUserId()
         {
             string userIdValue = null;

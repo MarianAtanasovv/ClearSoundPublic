@@ -1,0 +1,146 @@
+﻿@using ClearSoundCompany.Models.Carts
+@{
+    ViewData["Title"] = "Archive";
+}
+
+@model List<OrderCartArchiveViewModel>
+<section>
+    <div class="container main-container">
+        <div class="section-title" align="center" style=" padding: 0">
+            <p style="color: white;">Archive orders</p>
+        </div>
+        @foreach (var orderCart in Model)
+        {
+    <div class="section-title mb-4 mt-4" align="center" style=" padding: 0">
+        <p style="color: red; font-size: 30px;">Ordered on @orderCart.Products.FirstOrDefault().OrderDate.ToShortDateString()</p>
+    </div>
+
+            <!-- Shopping Cart-->
+            <div class="table-responsive shopping-cart">
+
+                <table class="table" style="color: white">
+                    <thead>
+                    <tr style="background: rgb(35, 35, 35); font-size: 17px">
+                        <th>Product Name</th>
+                        <th style="text-align: center">Retail Price</th>
+                        <th style="text-align: center">Quantity</th>
+                        <th style="text-align: center; color: rgb(255, 186, 186)">Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var productCart in orderCart.Products)
+                    {
+                        <tr>
+                            <td>
+                                <div class="product-item">
+                                    <div>
+                                        <a class="product-thumb" asp-controller="Products" asp-action="ProductInformation" asp-route-id="@productCart.Product.Id">
+                                            <img src="/database_files/Products/@productCart.ImageName" alt="Product" style="border-radius: 10px">
+                                        </a>
+
+                                    </div>
+                                    <div class="product-info">
+                                        <h4 class="product-title">
+                                            <a asp-controller="Products" asp-action="ProductInformation" asp-route-productId="@productCart.Product.Id">@productCart.Product.Name</a>
+                                        </h4>
+                                        <span style="font-weight: bold; padding: 0 0 10px 0">
+                                            <em style="font-weight: bold">Category:</em> <a asp-controller="Products" asp-action="AllProductsByCategory" asp-route-Id="@productCart.Product.CategoryId"> @productCart.Product.Category.Name</a>
+                                        </span>
+                                        <span style="font-weight: bold; padding: 0 0 10px 0">
+                                            @if (productCart.Color.ToString() == "red")
+                                            {
+                                                <em style="font-weight: bold">Color:</em>
+                                                <a style="color: red">Red</a>
+                                            }
+                                            else if (productCart.Color.ToString() == "black")
+                                            {
+                                                <em style="font-weight: bold">Color:</em>
+                                                <a style="color: black" class="blackColorCart">Black</a>
+                                            }
+                                            else if (productCart.Color.ToString() == "white")
+                                            {
+                                                <em style="font-weight: bold">Color:</em>
+                                                <a style="color: white">White</a>
+                                            }
+                                            else if (productCart.Color.ToString() == "blackandwhite")
+                                            {
+                                                <em style="font-weight: bold">Color:</em>
+                                                <a style="color: black" class="blackColorCart">Black </a>
+                                                <a>and White</a>
+                                            }
+                                            else if (productCart.Color.ToString() == "blackandred")
+                                            {
+                                                <em style="font-weight: bold">Color:</em>
+                                                <a style="color: black" class="blackColorCart">Black </a>
+                                                <a>and </a>
+                                                <a style="color: red">Red</a>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center" style="font-size: 18px">@productCart.Price €</td>
+
+                            <td class="text-center">
+                                <div class="count-input">
+
+                                    <div class="row">
+                                        <a class="col-3">
+                                        </a>
+
+                                        <button class="btn btn-light col-5">@productCart.Quantity</button>
+
+                                        <a class="col-3">
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            @{ var finalPrice = productCart.Price * productCart.Quantity; }
+                            <td class="text-center" style="font-size: 18px">@finalPrice € </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="shopping-cart-footer" style="font-size: 18px; background: rgb(35, 35, 35)">
+                <div class="row">
+                    <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                    <div class="col-xl-3 col-lg-4 col-md-5 font-weight-bold" style="color: rgb(255, 186, 186)">Subtotal: <span class="float-end" id="subtotal-price-span">@orderCart.TotalPrice € </span></div>
+                </div>
+                @if (orderCart.PaintingAddition != 0)
+                {
+                    <div class="row">
+                        <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                        <div class="col-xl-3 col-lg-4 col-md-5 font-weight-bold" style="color: rgb(255, 186, 186)">Bicolor (optional): <span class="float-end" id="paintadd-price-span">@orderCart.PaintingAddition € </span></div>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                    <div class="col-xl-3 col-lg-4 col-md-5  font-weight-bold" style="color: rgb(186, 255, 186)">
+                        Discount (<span id="discount-percentage-span">@orderCart.DiscountPercentage</span>%):
+                        @if (orderCart.DiscountPrice == 0)
+                        {
+                            <span class="float-end" id="discount-price-span">0 € </span>
+                        }
+                        else
+                        {
+                            <span class="float-end" id="discount-price-span">- @orderCart.DiscountPrice € </span>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-9 col-lg-8 col-md-7"></div>
+                    <div class="col-xl-3 col-lg-4 col-md-5 font-weight-bold" style="color: white">Total: <span class="float-end" id="total-price-span">@(orderCart.TotalPrice - orderCart.DiscountPrice + orderCart.PaintingAddition) €</span></div>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>
+
+@section scripts{
+    <script type="text/javascript">
+    </script>
+}

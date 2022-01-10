@@ -85,9 +85,15 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
         [HttpGet]
         public IActionResult AllImagesForProduct(string id)
         {
-            var images = _productServices.AllImagesForProduct(id);
+            var images = _productServices
+                .AllImagesForProduct(id)
+                .ProductImages
+                .OrderBy(i => i.Name);
 
-            return images != null ? View(images.ProductImages) : RedirectToAction("Error404");
+            if (images.Any()) return View(images);
+
+            TempData["alertWarning"] = "There is no photos to delete :(";
+            return RedirectToAction("ProductInformation", "Products", new { id, area = "" });
         }
 
         //View for all Categories (for editing)
@@ -171,7 +177,7 @@ namespace ClearSoundCompany.Areas.Administration.Controllers
         public IActionResult DeleteAllImages(string id)
         {
            var productId= _productServices.DeleteAllImages(id);
-            return RedirectToAction("ProductInformation", "Products", new {id = productId});
+            return RedirectToAction("ProductInformation", "Products", new { id = productId, area = "" });
         }
 
         //Cascade deleting a Category

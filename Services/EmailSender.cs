@@ -10,7 +10,7 @@ namespace ClearSoundCompany.Services
     {
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var sendGridKey = ;
+            var sendGridKey = @"";
             return Execute(sendGridKey, subject, htmlMessage, email);
         }
 
@@ -19,7 +19,7 @@ namespace ClearSoundCompany.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("email@email.com", "Clear Sound"),
+                From = new EmailAddress("office@clearsoundco.org", "Clear Sound"),
                 Subject = subject
             };
             msg.AddTo(new EmailAddress(email));
@@ -44,7 +44,7 @@ namespace ClearSoundCompany.Services
             }
             else
             {
-                msg.From = new EmailAddress("email@email.com", "For Clear Sound Support");
+                msg.From = new EmailAddress("office@clearsoundco.org", "For Clear Sound Support");
                 msg.HtmlContent = message;
                 msg.PlainTextContent = message;
             }

@@ -26,10 +26,10 @@
                 </a>
             </p>
             <a style="color: white" asp-controller="Products" asp-action="NewProductBefore" asp-route-id="@Model.Id">
-                <i class="fas fa-chevron-circle-left fa-2x float-left"></i>
+                <i class="fas fa-chevron-circle-left fa-2x float-start"></i>
             </a>
             <a style="color: white" asp-controller="Products" asp-action="NewProductAfter" asp-route-id="@Model.Id">
-                <i class="fas fa-chevron-circle-right fa-2x float-right"></i>
+                <i class="fas fa-chevron-circle-right fa-2x float-end"></i>
             </a>
             @if (_signInManager.IsSignedIn(User))
             {
